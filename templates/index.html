@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MecanixPro - Orden de Servicio</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0073b7;
+            --bg: #f4f6f9;
+            --card-bg: #ffffff;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--primary);
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 8px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .items-table th {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 10px;
+            font-size: 12px;
+            color: #555;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .items-table td {
+            padding: 8px 5px;
+        }
+
+        .btn-add {
+            background: #e8f4fd;
+            color: var(--primary);
+            border: 1px dashed var(--primary);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            margin-top: 10px;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .btn-add:hover {
+            background: #d4eafc;
+        }
+
+        .btn-delete {
+            background: #ff4d4f;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .totals-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            width: 260px;
+            font-size: 14px;
+        }
+
+        .total-row.grand-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+            border-top: 2px solid #ccc;
+            padding-top: 8px;
+            margin-top: 5px;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: #005a93;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔧 MECANIX PRO — Recepción de Vehículo</h1>
+
+    <form id="ordenForm">
+        <div class="grid-2">
+            <div>
+                <div class="section-title">👤 Datos del Cliente</div>
+                
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Tipo / N° Documento</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select id="tipo_doc" style="width: 35%;">
+                            <option value="DNI">DNI</option>
+                            <option value="RUC">RUC</option>
+                        </select>
+                        <input type="text" id="num_doc" style="width: 65%;" required>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Nombre Completo / Razón Social</label>
+                    <input type="text" id="nombre_cliente" required>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Teléfono</label>
+                        <input type="text" id="telefono">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Correo</label>
+                        <input type="email" id="correo">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" id="direccion">
+                </div>
+            </div>
+
+            <div>
+                <div class="section-title">🚗 Datos del Vehículo</div>
+                
+                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Placa</label>
+                        <input type="text" id="placa" required style="font-weight: bold; text-transform: uppercase;">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Marca</label>
+                        <input type="text" id="marca">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Modelo</label>
+                        <input type="text" id="modelo">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Año</label>
+                        <input type="number" id="anio">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Kilometraje</label>
+                        <input type="number" id="km">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Color</label>
+                        <input type="text" id="color">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>N° Chasis / VIN</label>
+                        <input type="text" id="chasis">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>N° Motor</label>
+                        <input type="text" id="motor">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">🛠️ Servicios (Mano de Obra)</div>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th style="width: 70%;">Descripción del Servicio</th>
+                    <th style="width: 22%;">Importe S/</th>
+                    <th style="width: 8%; text-align: center;"></th>
+                </tr>
+            </thead>
+            <tbody id="tabla-servicios">
+                <tr>
+                    <td><input type="text" class="serv-desc"></td>
+                    <td><input type="number" class="serv-precio" step="0.01"></td>
+                    <td style="text-align: center;"><button type="button" class="btn-delete" onclick="eliminarFila(this)">✕</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn-add" onclick="agregarFila('tabla-servicios', 'serv-desc', 'serv-precio')">+ Agregar Servicio</button>
+
+        <div class="section-title">📦 Repuestos / Insumos</div>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th style="width: 70%;">Descripción del Repuesto</th>
+                    <th style="width: 22%;">Importe S/</th>
+                    <th style="width: 8%; text-align: center;"></th>
+                </tr>
+            </thead>
+            <tbody id="tabla-repuestos">
+                <tr>
+                    <td><input type="text" class="rep-desc"></td>
+                    <td><input type="number" class="rep-precio" step="0.01"></td>
+                    <td style="text-align: center;"><button type="button" class="btn-delete" onclick="eliminarFila(this)">✕</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn-add" onclick="agregarFila('tabla-repuestos', 'rep-desc', 'rep-precio')">+ Agregar Repuesto</button>
+
+        <div class="totals-card">
+            <div class="total-row"><span>Subtotal Servicios:</span> <span id="tot-servicios">S/ 0.00</span></div>
+            <div class="total-row"><span>Subtotal Repuestos:</span> <span id="tot-repuestos">S/ 0.00</span></div>
+            <div class="total-row"><span>SubTotal:</span> <span id="tot-subtotal">S/ 0.00</span></div>
+            <div class="total-row"><span>IGV (18%):</span> <span id="tot-igv">S/ 0.00</span></div>
+            <div class="total-row grand-total"><span>TOTAL:</span> <span id="tot-final">S/ 0.00</span></div>
+        </div>
+
+        <button type="submit" class="btn-submit">⚡ Generar Orden de Servicio</button>
+    </form>
+</div>
+
+<script>
+    function agregarFila(tablaId, descClass, precioClass) {
+        const tbody = document.getElementById(tablaId);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" class="${descClass}" oninput="calcularTotales()" onchange="calcularTotales()"></td>
+            <td><input type="number" class="${precioClass}" step="0.01" oninput="calcularTotales()" onchange="calcularTotales()"></td>
+            <td style="text-align: center;"><button type="button" class="btn-delete" onclick="eliminarFila(this)">✕</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function eliminarFila(btn) {
+        const tr = btn.closest('tr');
+        if (tr.parentNode.children.length > 1) {
+            tr.remove();
+        } else {
+            tr.querySelectorAll('input').forEach(i => i.value = '');
+        }
+        calcularTotales();
+    }
+
+    function calcularTotales() {
+        let totalServicios = 0;
+        document.querySelectorAll('.serv-precio').forEach(inp => {
+            totalServicios += parseFloat(inp.value) || 0;
+        });
+
+        let totalRepuestos = 0;
+        document.querySelectorAll('.rep-precio').forEach(inp => {
+            totalRepuestos += parseFloat(inp.value) || 0;
+        });
+
+        const subtotal = totalServicios + totalRepuestos;
+        const igv = subtotal * 0.18;
+        const grandTotal = subtotal + igv;
+
+        document.getElementById('tot-servicios').innerText = 'S/ ' + totalServicios.toFixed(2);
+        document.getElementById('tot-repuestos').innerText = 'S/ ' + totalRepuestos.toFixed(2);
+        document.getElementById('tot-subtotal').innerText = 'S/ ' + subtotal.toFixed(2);
+        document.getElementById('tot-igv').innerText = 'S/ ' + igv.toFixed(2);
+        document.getElementById('tot-final').innerText = 'S/ ' + grandTotal.toFixed(2);
+    }
+
+    document.getElementById('ordenForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const servicios = [];
+        document.querySelectorAll('#tabla-servicios tr').forEach(tr => {
+            const desc = tr.querySelector('.serv-desc').value;
+            const precio = tr.querySelector('.serv-precio').value;
+            if (desc.trim() !== '') servicios.push({ descripcion: desc, precio: parseFloat(precio) || 0 });
+        });
+
+        const repuestos = [];
+        document.querySelectorAll('#tabla-repuestos tr').forEach(tr => {
+            const desc = tr.querySelector('.rep-desc').value;
+            const precio = tr.querySelector('.rep-precio').value;
+            if (desc.trim() !== '') repuestos.push({ descripcion: desc, precio: parseFloat(precio) || 0 });
+        });
+
+        const payload = {
+            cliente: {
+                tipo_doc: document.getElementById('tipo_doc').value,
+                num_doc: document.getElementById('num_doc').value,
+                nombre: document.getElementById('nombre_cliente').value,
+                telefono: document.getElementById('telefono').value,
+                correo: document.getElementById('correo').value,
+                direccion: document.getElementById('direccion').value
+            },
+            vehiculo: {
+                placa: document.getElementById('placa').value,
+                marca: document.getElementById('marca').value,
+                modelo: document.getElementById('modelo').value,
+                anio: document.getElementById('anio').value,
+                km: document.getElementById('km').value,
+                color: document.getElementById('color').value,
+                chasis: document.getElementById('chasis').value,
+                motor: document.getElementById('motor').value
+            },
+            servicios: servicios,
+            repuestos: repuestos
+        };
+
+        fetch('/api/crear-orden', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.mensaje);
+        });
+    });
+
+    document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('serv-precio') || e.target.classList.contains('rep-precio')) {
+            calcularTotales();
+        }
+    });
+
+    calcularTotales();
+</script>
+
+</body>
+</html>
