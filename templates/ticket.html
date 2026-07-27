@@ -2,131 +2,115 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Orden de Servicio - Mecanix Pro</title>
+    <title>Ticket de Orden de Servicio</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #eee; margin: 0; padding: 20px; }
-        .sheet { background: white; width: 210mm; min-height: 297mm; padding: 15mm; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; }
-        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #1a365d; padding-bottom: 10px; margin-bottom: 20px; }
-        .section-title { background: #1a365d; color: white; padding: 5px 10px; font-size: 14px; margin-top: 15px; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; }
-        th { background: #f2f2f2; }
-        .text-right { text-align: right; }
-        .no-print { text-align: center; margin-top: 20px; }
-        .btn-print { background: #27ae60; color: white; padding: 10px 20px; border: none; font-size: 16px; cursor: pointer; border-radius: 5px; }
-        .btn-print:hover { background: #219653; }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            width: 350px;
+            margin: 0 auto;
+            padding: 10px;
+            color: #000;
+            background: #fff;
+        }
+        h2, h4 {
+            text-align: center;
+            margin: 5px 0;
+        }
+        .divider {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            font-size: 13px;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 3px 0;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .totals {
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .print-btn {
+            display: block;
+            width: 100%;
+            background: #000;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+        }
         @media print {
-            body { background: none; padding: 0; }
-            .sheet { box-shadow: none; margin: 0; width: 100%; padding: 10mm; }
-            .no-print { display: none; }
+            .print-btn {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="sheet">
-        <div class="header">
-            <div>
-                <h2>MECANIX PRO</h2>
-                <p>Sistema de Gestión Automotriz</p>
-            </div>
-            <div style="text-align: right;">
-                <h3>ORDEN DE SERVICIO</h3>
-                <p>Fecha: <span id="fecha-actual"></span></p>
-            </div>
-        </div>
 
-        <div class="section-title">DATOS DEL CLIENTE</div>
-        <table>
-            <tr>
-                <td><strong>{{ datos.tipo_doc }}:</strong> {{ datos.n_doc }}</td>
-                <td><strong>Cliente:</strong> {{ datos.cliente }}</td>
-            </tr>
-            <tr>
-                <td><strong>Teléfono:</strong> {{ datos.telefono }}</td>
-                <td><strong>Correo:</strong> {{ datos.correo }}</td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Dirección:</strong> {{ datos.direccion }}</td>
-            </tr>
-        </table>
+    <h2>MecanixPro</h2>
+    <h4>Orden de Servicio</h4>
+    <div class="divider"></div>
 
-        <div class="section-title">DATOS DEL VEHÍCULO</div>
-        <table>
-            <tr>
-                <td><strong>Placa:</strong> {{ datos.placa }}</td>
-                <td><strong>Marca:</strong> {{ datos.marca }}</td>
-                <td><strong>Modelo:</strong> {{ datos.modelo }}</td>
-            </tr>
-            <tr>
-                <td><strong>Año:</strong> {{ datos.anio }}</td>
-                <td><strong>Kilometraje:</strong> {{ datos.kilometraje }}</td>
-                <td><strong>Color:</strong> {{ datos.color }}</td>
-            </tr>
-            <tr>
-                <td><strong>N° Chasis:</strong> {{ datos.chasis }}</td>
-                <td colspan="2"><strong>N° Motor:</strong> {{ datos.motor }}</td>
-            </tr>
-        </table>
+    <p><strong>Cliente:</strong> {{ orden.cliente.nombre }}<br>
+       <strong>{{ orden.cliente.tipo_doc }}:</strong> {{ orden.cliente.num_doc }}<br>
+       <strong>Teléfono:</strong> {{ orden.cliente.telefono }}<br>
+       <strong>Dirección:</strong> {{ orden.cliente.direccion }}</p>
 
-        <div class="section-title">SERVICIOS (MANO DE OBRA)</div>
-        <table>
-            <tr>
-                <th>Descripción del Servicio</th>
-                <th class="text-right" style="width: 120px;">Importe S/</th>
-            </tr>
-            {% for desc, imp in servicios %}
-                {% if desc %}
-                <tr>
-                    <td>{{ desc }}</td>
-                    <td class="text-right">{{ imp }}</td>
-                </tr>
-                {% endif %}
-            {% endfor %}
-        </table>
+    <div class="divider"></div>
+    <p><strong>Vehículo:</strong> {{ orden.vehiculo.marca }} {{ orden.vehiculo.modelo }}<br>
+       <strong>Placa:</strong> {{ orden.vehiculo.placa }}<br>
+       <strong>Año/KM:</strong> {{ orden.vehiculo.anio }} / {{ orden.vehiculo.km }} km</p>
 
-        <div class="section-title">REPUESTOS / INSUMOS</div>
-        <table>
-            <tr>
-                <th>Descripción del Repuesto</th>
-                <th class="text-right" style="width: 120px;">Importe S/</th>
-            </tr>
-            {% for desc, imp in repuestos %}
-                {% if desc %}
-                <tr>
-                    <td>{{ desc }}</td>
-                    <td class="text-right">{{ imp }}</td>
-                </tr>
-                {% endif %}
-            {% endfor %}
-        </table>
+    <div class="divider"></div>
+    <h4>Detalle de Servicios</h4>
+    <table>
+        {% for serv in orden.servicios %}
+        <tr>
+            <td>{{ serv.descripcion }}</td>
+            <td class="text-right">S/ {{ "%.2f"|format(serv.precio) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-        <div style="margin-top: 20px; float: right; width: 250px;">
-            <table>
-                <tr>
-                    <td><strong>Total Servicios:</strong></td>
-                    <td class="text-right">S/ {{ "%.2f"|format(total_servicios) }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Total Repuestos:</strong></td>
-                    <td class="text-right">S/ {{ "%.2f"|format(total_repuestos) }}</td>
-                </tr>
-                <tr style="background: #f2f2f2;">
-                    <td><strong>TOTAL GENERAL:</strong></td>
-                    <td class="text-right"><strong>S/ {{ "%.2f"|format(total_general) }}</strong></td>
-                </tr>
-            </table>
-        </div>
-        <div style="clear: both;"></div>
+    <h4>Detalle de Repuestos</h4>
+    <table>
+        {% for rep in orden.repuestos %}
+        <tr>
+            <td>{{ rep.descripcion }}</td>
+            <td class="text-right">S/ {{ "%.2f"|format(rep.precio) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-        <div class="no-print">
-            <button class="btn-print" onclick="window.print()">🖨️ Imprimir Orden A4</button>
-            <br><br>
-            <a href="/" style="color: #1a365d; text-decoration: none;">← Volver al formulario</a>
-        </div>
+    <div class="divider"></div>
+    <div class="totals">
+        {% set sub_serv = orden.servicios | sum(attribute='precio') %}
+        {% set sub_rep = orden.repuestos | sum(attribute='precio') %}
+        {% set subtotal = sub_serv + sub_rep %}
+        {% set igv = subtotal * 0.18 %}
+        {% set total = subtotal + igv %}
+        
+        <p>Subtotal Servicios: S/ {{ "%.2f"|format(sub_serv) }}</p>
+        <p>Subtotal Repuestos: S/ {{ "%.2f"|format(sub_rep) }}</p>
+        <p><strong>Subtotal:</strong> S/ {{ "%.2f"|format(subtotal) }}</p>
+        <p><strong>IGV (18%):</strong> S/ {{ "%.2f"|format(igv) }}</p>
+        <h3>TOTAL: S/ {{ "%.2f"|format(total) }}</h3>
     </div>
 
-    <script>
-        document.getElementById('fecha-actual').innerText = new Date().toLocaleDateString();
-    </script>
+    <div class="divider"></div>
+    <p style="text-align: center; font-size: 12px;">¡Gracias por su preferencia!</p>
+
+    <button class="print-btn" onclick="window.print()">Imprimir Ticket</button>
+
 </body>
 </html>
