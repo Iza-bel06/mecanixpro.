@@ -404,108 +404,32 @@
             servicios: servicios,
             repuestos: repuestos
         };
-<script>
+
+        <script>
     function calcularTotales() {
         let sumaServ = 0;
         let sumaRep = 0;
 
-        // Sumamos todos los inputs dentro de la tabla o sección de Servicios
-        // Buscamos cualquier input numérico que esté antes de la sección de repuestos
         const inputs = document.querySelectorAll('input[type="number"]');
-        
-        inputs.forEach(inp => {
-            if (inp.id === 'anio' || inp.id === 'km') return; // Ignoramos año y km
-            
-            let val = parseFloat(inp.value) || 0;
-            
-            // Verificamos en qué contenedor está para saber si es servicio o repuesto
-            let container = inp.closest('div');
-            let parentHTML = container ? container.innerHTML.toLowerCase() : '';
-            let rowHTML = inp.closest('tr') ? inp.closest('tr').outerHTML.toLowerCase() : '';
-            
-            // Si está en la sección de servicios (o arriba)
-            if (parentHTML.includes('servicio') || rowHTML.includes('servicio') || inp.placeholder === '150' || inp.closest('#seccion-servicios') || !parentHTML.includes('repuesto')) {
-                // Verificamos si realmente pertenece a la parte superior por posición en la página
-                let rect = inp.getBoundingClientRect();
-                // O de forma más segura, revisamos si está antes de la etiqueta de repuestos
-            }
-        });
 
-        // Método infalible por orden de aparición en el formulario:
-        // Tomamos todos los inputs numéricos de precios (excluyendo anio y km)
-        let todosLosPrecios = [];
         inputs.forEach(inp => {
-            if (inp.id !== 'anio' && inp.id !== 'km' && inp.id !== 'tipo_doc') {
-                todosLosPrecios.push(inp);
-            }
-        });
+            if (inp.id === 'anio' || inp.id === 'km' || inp.id === 'tipo_doc') return;
 
-        // Identificamos cuáles pertenecen a servicios y cuáles a repuestos por su posición en el DOM
-        todosLosPrecios.forEach((inp) => {
-            let val = parseFloat(inp.value) || 0;
-            let htmlTotal = document.body.innerHTML;
-            
-            // Buscamos si el input está en la tabla superior o inferior
-            let table = inp.closest('table');
-            if (table) {
-                // Si la tabla tiene la palabra repuestos o está más abajo
-                let prevText = "";
-                let elem = table.previousElementSibling;
-                while(elem) {
-                    prevText += elem.innerText.toLowerCase() + " ";
-                    elem = elem.previousElementSibling;
-                }
-                
-                if (prevText.includes('repuesto') || table.id.includes('rep') || inp.closest('#tabla-repuestos')) {
-                    sumaRep += val;
-                } else {
-                    sumaServ += val;
-                }
+            let valor = parseFloat(inp.value) || 0;
+            let htmlContexto = (inp.closest('tr')?.outerHTML || '') + (inp.closest('table')?.outerHTML || '');
+            htmlContexto = htmlContexto.toLowerCase();
+
+            if (htmlContexto.includes('repuesto') || htmlContexto.includes('insumo')) {
+                sumaRep += valor;
             } else {
-                // Fallback directo si no están en tablas
-                if (inp.value == "190" || inp.closest('div').innerHTML.includes('Repuesto')) {
-                    sumaRep += val;
-                } else if (val > 0) {
-                    sumaServ += val;
-                }
+                sumaServ += valor;
             }
         });
-
-        // Limpieza de respaldo por si acaso se duplicó la suma global
-        sumaServ = 0;
-        sumaRep = 0;
-
-        // Recorrido definitivo por las filas de las tablas visibles
-        const tablas = document.querySelectorAll('table');
-        if (tablas.length >= 2) {
-            // Primera tabla (Servicios)
-            tablas[0].querySelectorAll('input[type="number"]').forEach(inp => {
-                sumaServ += parseFloat(inp.value) || 0;
-            });
-            // Segunda tabla (Repuestos)
-            tablas[1].querySelectorAll('input[type="number"]').forEach(inp => {
-                sumaRep += parseFloat(inp.value) || 0;
-            });
-        } else {
-            // Si no son tablas separadas, filtramos por posición vertical (Y)
-            inputs.forEach(inp => {
-                if (inp.id === 'anio' || inp.id === 'km') return;
-                let val = parseFloat(inp.value) || 0;
-                // Si está en la mitad superior de la zona de costos o por encima del bloque de repuestos
-                let containerText = inp.closest('div')?.innerText.toLowerCase() || '';
-                if (containerText.includes('repuesto')) {
-                    sumaRep += val;
-                } else {
-                    sumaServ += val;
-                }
-            });
-        }
 
         const subtotal = sumaServ + sumaRep;
         const igv = subtotal * 0.18;
         const grandTotal = subtotal + igv;
 
-        // Actualizamos los elementos en pantalla
         const elServ = document.getElementById('tot-servicios');
         const elRep = document.getElementById('tot-repuestos');
         const elSub = document.getElementById('tot-subtotal');
@@ -523,4 +447,3 @@
     window.addEventListener('DOMContentLoaded', calcularTotales);
     window.onload = calcularTotales;
 </script>
-        
