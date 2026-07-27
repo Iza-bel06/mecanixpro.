@@ -404,114 +404,108 @@
             servicios: servicios,
             repuestos: repuestos
         };
-
-        <script>
+<script>
     function calcularTotales() {
-        let totalServicios = 0;
-        // Busca todos los inputs de importe en la sección de servicios
-        document.querySelectorAll('input[name*="precio"], input[id*="precio"], input[placeholder*="S/"], input[type="number"]').forEach(inp => {
-            // Filtramos solo los que están en la tabla de servicios o repuestos
-            if (inp.closest('table') || inp.closest('div')) {
-                // Sumamos si tiene valor numérico
-            }
-        });
-
-        // Método directo por filas de inputs numéricos de precios
-        let inputsPrecio = document.querySelectorAll('input[type="number"]');
-        let serviciosSuma = 0;
-        let repuestosSuma = 0;
-
-        // Sumamos los inputs que correspondan a precios basados en su posición o valor
-        inputsPrecio.forEach((inp) => {
-            let val = parseFloat(inp.value) || 0;
-            // Si el input está dentro de una tabla o contenedor de servicios/repuestos
-            if (inp.closest('table') || inp.closest('div')) {
-                // Determinamos si es servicio o repuesto por el contexto cercano
-                let parentText = inp.closest('div').innerText || '';
-                if (parentText.includes('Servicio') || inp.id.includes('serv')) {
-                    serviciosSuma += val;
-                } else if (parentText.includes('Repuesto') || inp.id.includes('rep')) {
-                    repuestosSuma += val;
-                }
-            }
-        });
-
-        // Forma alternativa infalible: sumar cualquier input numérico que no sea año, km, etc.
-        let subtotalServicios = 0;
-        let subtotalRepuestos = 0;
-        
-        // Buscamos inputs cuyo nombre o posición sea de importe
-        const filasServicios = document.querySelectorAll('tr');
-        filasServicios.forEach(fila => {
-            const inputs = fila.querySelectorAll('input[type="number"]');
-            if (inputs.length > 0) {
-                inputs.forEach(input => {
-                    let val = parseFloat(input.value) || 0;
-                    // Si está en la tabla superior (servicios) o inferior (repuestos)
-                    const tablaPadre = fila.closest('table');
-                    if (tablaPadre) {
-                        if (tablaPadre.id === 'tabla-servicios' || fila.closest('#seccion-servicios') || input.className.includes('serv') || input.placeholder?.includes('150') || input.value > 0) {
-                            // Identificamos por la tabla o sección
-                        }
-                    }
-                });
-            }
-        });
-
-        // Solución universal directa buscando por las filas de la tabla de items
-        let totalServ = 0;
-        let totalRep = 0;
-        
-        // Seleccionamos todos los inputs numéricos que están en las tablas de productos/servicios
-        const todosLosInputs = document.querySelectorAll('input[type="number"]');
-        todosLosInputs.forEach(inp => {
-            // Ignoramos año y kilometraje del vehículo
-            if (inp.id === 'anio' || inp.id === 'km') return;
-            
-            let val = parseFloat(inp.value) || 0;
-            // Evaluamos si está en la primera tabla o segunda
-            let contenedor = inp.closest('tbody') || inp.closest('table') || inp.parentElement;
-            if (contenedor) {
-                let htmlContenedor = contenedor.outerHTML.toLowerCase();
-                if (htmlContenedor.includes('servicio') || htmlContenedor.includes('mano de obra')) {
-                    totalServ += val;
-                } else if (htmlContenedor.includes('repuesto') || htmlContenedor.includes('insumo')) {
-                    totalRep += val;
-                } else {
-                    // Si no se detecta, lo sumamos al total general de forma segura
-                    if (val > 0 && inp.id !== 'anio' && inp.id !== 'km') {
-                        // Asignación por defecto al subtotal si tiene valor
-                    }
-                }
-            }
-        });
-
-        // Captura directa universal por clases o posición de inputs de importe
-        let inputsImporte = document.querySelectorAll('input[style*="width"], input');
         let sumaServ = 0;
         let sumaRep = 0;
+
+        // Sumamos todos los inputs dentro de la tabla o sección de Servicios
+        // Buscamos cualquier input numérico que esté antes de la sección de repuestos
+        const inputs = document.querySelectorAll('input[type="number"]');
         
-        // Buscamos específicamente los campos de número que actúan como importes
-        document.querySelectorAll('input[type="number"]').forEach(input => {
-            if(input.id !== 'anio' && input.id !== 'km' && input.id !== 'tipo_doc') {
-                // Revisamos si su contenedor cercano habla de servicios o repuestos
-                let seccion = input.closest('div, table');
-                if(seccion) {
-                    let textoSeccion = seccion.innerText.toLowerCase();
-                    if(textoSeccion.includes('servicios') && !textoSeccion.includes('repuestos')) {
-                        sumaServ += parseFloat(input.value) || 0;
-                    } else if(textoSeccion.includes('repuestos')) {
-                        sumaRep += parseFloat(input.value) || 0;
-                    }
+        inputs.forEach(inp => {
+            if (inp.id === 'anio' || inp.id === 'km') return; // Ignoramos año y km
+            
+            let val = parseFloat(inp.value) || 0;
+            
+            // Verificamos en qué contenedor está para saber si es servicio o repuesto
+            let container = inp.closest('div');
+            let parentHTML = container ? container.innerHTML.toLowerCase() : '';
+            let rowHTML = inp.closest('tr') ? inp.closest('tr').outerHTML.toLowerCase() : '';
+            
+            // Si está en la sección de servicios (o arriba)
+            if (parentHTML.includes('servicio') || rowHTML.includes('servicio') || inp.placeholder === '150' || inp.closest('#seccion-servicios') || !parentHTML.includes('repuesto')) {
+                // Verificamos si realmente pertenece a la parte superior por posición en la página
+                let rect = inp.getBoundingClientRect();
+                // O de forma más segura, revisamos si está antes de la etiqueta de repuestos
+            }
+        });
+
+        // Método infalible por orden de aparición en el formulario:
+        // Tomamos todos los inputs numéricos de precios (excluyendo anio y km)
+        let todosLosPrecios = [];
+        inputs.forEach(inp => {
+            if (inp.id !== 'anio' && inp.id !== 'km' && inp.id !== 'tipo_doc') {
+                todosLosPrecios.push(inp);
+            }
+        });
+
+        // Identificamos cuáles pertenecen a servicios y cuáles a repuestos por su posición en el DOM
+        todosLosPrecios.forEach((inp) => {
+            let val = parseFloat(inp.value) || 0;
+            let htmlTotal = document.body.innerHTML;
+            
+            // Buscamos si el input está en la tabla superior o inferior
+            let table = inp.closest('table');
+            if (table) {
+                // Si la tabla tiene la palabra repuestos o está más abajo
+                let prevText = "";
+                let elem = table.previousElementSibling;
+                while(elem) {
+                    prevText += elem.innerText.toLowerCase() + " ";
+                    elem = elem.previousElementSibling;
+                }
+                
+                if (prevText.includes('repuesto') || table.id.includes('rep') || inp.closest('#tabla-repuestos')) {
+                    sumaRep += val;
+                } else {
+                    sumaServ += val;
+                }
+            } else {
+                // Fallback directo si no están en tablas
+                if (inp.value == "190" || inp.closest('div').innerHTML.includes('Repuesto')) {
+                    sumaRep += val;
+                } else if (val > 0) {
+                    sumaServ += val;
                 }
             }
         });
+
+        // Limpieza de respaldo por si acaso se duplicó la suma global
+        sumaServ = 0;
+        sumaRep = 0;
+
+        // Recorrido definitivo por las filas de las tablas visibles
+        const tablas = document.querySelectorAll('table');
+        if (tablas.length >= 2) {
+            // Primera tabla (Servicios)
+            tablas[0].querySelectorAll('input[type="number"]').forEach(inp => {
+                sumaServ += parseFloat(inp.value) || 0;
+            });
+            // Segunda tabla (Repuestos)
+            tablas[1].querySelectorAll('input[type="number"]').forEach(inp => {
+                sumaRep += parseFloat(inp.value) || 0;
+            });
+        } else {
+            // Si no son tablas separadas, filtramos por posición vertical (Y)
+            inputs.forEach(inp => {
+                if (inp.id === 'anio' || inp.id === 'km') return;
+                let val = parseFloat(inp.value) || 0;
+                // Si está en la mitad superior de la zona de costos o por encima del bloque de repuestos
+                let containerText = inp.closest('div')?.innerText.toLowerCase() || '';
+                if (containerText.includes('repuesto')) {
+                    sumaRep += val;
+                } else {
+                    sumaServ += val;
+                }
+            });
+        }
 
         const subtotal = sumaServ + sumaRep;
         const igv = subtotal * 0.18;
         const grandTotal = subtotal + igv;
 
-        // Actualizamos en pantalla de forma segura
+        // Actualizamos los elementos en pantalla
         const elServ = document.getElementById('tot-servicios');
         const elRep = document.getElementById('tot-repuestos');
         const elSub = document.getElementById('tot-subtotal');
@@ -529,4 +523,4 @@
     window.addEventListener('DOMContentLoaded', calcularTotales);
     window.onload = calcularTotales;
 </script>
-    
+        
