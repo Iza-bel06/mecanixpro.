@@ -9,8 +9,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# Base de datos simulada de usuarios (en un proyecto real se usa PostgreSQL o SQLite)
-# Usuario de prueba inicial: admin / 123456
+# Base de datos simulada de usuarios
 users_db = {
     "1": {
         "id": "1",
@@ -37,7 +36,6 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         
-        # Buscar usuario
         user_found = None
         for uid, udata in users_db.items():
             if udata["username"] == username:
@@ -60,7 +58,7 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/')
-@login_required  # Esto protege la página para que solo entren usuarios logueados
+@login_required  
 def index():
     return render_template('index.html')
 
