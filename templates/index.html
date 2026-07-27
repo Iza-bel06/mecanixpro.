@@ -1,10 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MecanixPro - Orden de Servicio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #0277bd;
+            border-bottom: 2px solid #0277bd;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group.full {
+            grid-column: span 2;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f3f5;
+        }
+        .btn-add {
+            background-color: #0277bd;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .btn-add:hover {
+            background-color: #01579b;
+        }
+        .btn-delete {
+            background-color: #e53935;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .totales-container {
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        .total-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 40px;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        .total-row.final {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0277bd;
+            border-top: 2px solid #ccc;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .btn-submit {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        .btn-submit:hover {
+            background-color: #1b5e20;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 style="text-align: center; color: #333;">MECANIXPRO - ORDEN DE TRABAJO</h1>
+
+    <form id="ordenForm">
+        <!-- DATOS DEL CLIENTE -->
+        <h2>Datos del Cliente</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="tipo_doc">Tipo de Documento</label>
+                <select id="tipo_doc">
+                    <option value="DNI">DNI</option>
+                    <option value="RUC">RUC</option>
+                    <option value="CE">Carné de Extranjería</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="num_doc">N° de Documento</label>
+                <input type="text" id="num_doc" required>
+            </div>
+            <div class="form-group full">
+                <label for="nombre_cliente">Nombre / Razón Social</label>
+                <input type="text" id="nombre_cliente" required>
+            </div>
+            <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono">
+            </div>
+            <div class="form-group">
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" id="correo">
+            </div>
+            <div class="form-group full">
+                <label for="direccion">Dirección</label>
+                <input type="text" id="direccion">
+            </div>
+        </div>
+
+        <!-- DATOS DEL VEHÍCULO -->
+        <h2>Datos del Vehículo</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="placa">Placa</label>
+                <input type="text" id="placa" required>
+            </div>
+            <div class="form-group">
+                <label for="marca">Marca</label>
+                <input type="text" id="marca">
+            </div>
+            <div class="form-group">
+                <label for="modelo">Modelo</label>
+                <input type="text" id="modelo">
+            </div>
+            <div class="form-group">
+                <label for="anio">Año</label>
+                <input type="number" id="anio">
+            </div>
+            <div class="form-group">
+                <label for="km">Kilometraje (KM)</label>
+                <input type="number" id="km">
+            </div>
+            <div class="form-group">
+                <label for="color">Color</label>
+                <input type="text" id="color">
+            </div>
+            <div class="form-group">
+                <label for="chasis">N° de Chasis / VIN</label>
+                <input type="text" id="chasis">
+            </div>
+            <div class="form-group">
+                <label for="motor">N° de Motor</label>
+                <input type="text" id="motor">
+            </div>
+        </div>
+
+        <!-- SERVICIOS -->
+        <h2>🛠️ Servicios (Mano de Obra)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Descripción del Servicio</th>
+                    <th style="width: 150px;">Importe S/</th>
+                    <th style="width: 50px; text-align: center;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-servicios">
+                <tr>
+                    <td><input type="text" class="serv-desc" style="width: 95%;"></td>
+                    <td><input type="number" class="serv-precio" step="0.01" style="width: 90%;"></td>
+                    <td style="text-align: center;"><button type="button" class="btn-delete" onclick="eliminarFila(this)">✕</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn-add" onclick="agregarFila('tabla-servicios', 'serv-desc', 'serv-precio')">+ Agregar Servicio</button>
+
+        <!-- REPUESTOS -->
+        <h2>📦 Repuestos / Insumos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Descripción del Repuesto</th>
+                    <th style="width: 150px;">Importe S/</th>
+                    <th style="width: 50px; text-align: center;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-repuestos">
+                <tr>
+                    <td><input type="text" class="rep-desc" style="width: 95%;"></td>
+                    <td><input type="number" class="rep-precio" step="0.01" style="width: 90%;"></td>
+                    <td style="text-align: center;"><button type="button" class="btn-delete" onclick="eliminarFila(this)">✕</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn-add" onclick="agregarFila('tabla-repuestos', 'rep-desc', 'rep-precio')">+ Agregar Repuesto</button>
+
+        <!-- TOTALES -->
+        <div class="totales-container">
+            <div class="total-row">
+                <span>Subtotal Servicios:</span>
+                <span id="tot-servicios">S/ 0.00</span>
+            </div>
+            <div class="total-row">
+                <span>Subtotal Repuestos:</span>
+                <span id="tot-repuestos">S/ 0.00</span>
+            </div>
+            <div class="total-row">
+                <span>SubTotal:</span>
+                <span id="tot-subtotal">S/ 0.00</span>
+            </div>
+            <div class="total-row">
+                <span>IGV (18%):</span>
+                <span id="tot-igv">S/ 0.00</span>
+            </div>
+            <div class="total-row final">
+                <span>TOTAL:</span>
+                <span id="tot-final">S/ 0.00</span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Guardar y Generar Orden</button>
+    </form>
+</div>
+
 <script>
     function agregarFila(tablaId, descClass, precioClass) {
         const tbody = document.getElementById(tablaId);
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="text" class="${descClass}"></td>
-            <td><input type="number" class="${precioClass}" step="0.01"></td>
+            <td><input type="text" class="${descClass}" style="width: 95%;"></td>
+            <td><input type="number" class="${precioClass}" step="0.01" style="width: 90%;"></td>
             <td style="text-align: center;"><button type="button" class="btn-delete" onclick="eliminarFila(this)">✕</button></td>
         `;
         tbody.appendChild(tr);
@@ -48,8 +317,10 @@
         if (elFin) elFin.innerText = 'S/ ' + grandTotal.toFixed(2);
     }
 
-    // Escuchar cambios en tiempo real en todo el documento
+    // Escuchar eventos en tiempo real
     document.addEventListener('input', calcularTotales);
+    document.addEventListener('keyup', calcularTotales);
+    document.addEventListener('change', calcularTotales);
 
     document.getElementById('ordenForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -92,9 +363,11 @@
         };
 
         console.log(payload);
-        alert('Orden lista para enviar');
+        alert('¡Orden lista y calculada correctamente!');
     });
 
-    // Calcular al cargar la página
     window.addEventListener('DOMContentLoaded', calcularTotales);
 </script>
+
+</body>
+</html>
