@@ -1,4 +1,286 @@
-document.getElementById('ordenForm').addEventListener('submit', async function(e) {
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MecanixPro - Orden de Servicio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 5px;
+            margin-top: 25px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #bd2130;
+        }
+        .totals-section {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 16px;
+        }
+        .totals-section p {
+            margin: 5px 0;
+        }
+        .totals-section h3 {
+            border: none;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛠️ MecanixPro - Orden de Servicio</h2>
+
+    <form id="ordenForm">
+        <h3>👤 Datos del Cliente</h3>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="tipo_doc">Tipo de Documento</label>
+                <select id="tipo_doc">
+                    <option value="DNI">DNI</option>
+                    <option value="RUC">RUC</option>
+                    <option value="CE">Carné de Extranjería</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="num_doc">Nro de Documento</label>
+                <input type="text" id="num_doc" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="nombre_cliente">Nombre o Razón Social</label>
+            <input type="text" id="nombre_cliente" required>
+        </div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono">
+            </div>
+            <div class="form-group">
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" id="correo">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion">
+        </div>
+
+        <h3>🚗 Datos del Vehículo</h3>
+        <div class="grid-3">
+            <div class="form-group">
+                <label for="placa">Placa</label>
+                <input type="text" id="placa" required>
+            </div>
+            <div class="form-group">
+                <label for="marca">Marca</label>
+                <input type="text" id="marca">
+            </div>
+            <div class="form-group">
+                <label for="modelo">Modelo</label>
+                <input type="text" id="modelo">
+            </div>
+        </div>
+        <div class="grid-3">
+            <div class="form-group">
+                <label for="anio">Año</label>
+                <input type="text" id="anio">
+            </div>
+            <div class="form-group">
+                <label for="km">Kilometraje</label>
+                <input type="text" id="km">
+            </div>
+            <div class="form-group">
+                <label for="color">Color</label>
+                <input type="text" id="color">
+            </div>
+        </div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="chasis">Nro de Chasis / VIN</label>
+                <input type="text" id="chasis">
+            </div>
+            <div class="form-group">
+                <label for="motor">Nro de Motor</label>
+                <input type="text" id="motor">
+            </div>
+        </div>
+
+        <h3>🛠️ Servicios (Mano de Obra)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Descripción del Servicio</th>
+                    <th style="width: 150px;">Importe S/</th>
+                    <th style="width: 80px;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-servicios">
+                <tr>
+                    <td><input type="text" class="serv-desc" placeholder="Ej. Afinamiento"></td>
+                    <td><input type="number" step="0.01" class="serv-precio" value="0.00" oninput="calcularTotales()"></td>
+                    <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn" onclick="agregarServicio()">+ Agregar Servicio</button>
+
+        <h3>📦 Repuestos / Insumos</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Descripción del Repuesto</th>
+                    <th style="width: 150px;">Importe S/</th>
+                    <th style="width: 80px;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-repuestos">
+                <tr>
+                    <td><input type="text" class="rep-desc" placeholder="Ej. Filtro de aceite"></td>
+                    <td><input type="number" step="0.01" class="rep-precio" value="0.00" oninput="calcularTotales()"></td>
+                    <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn" onclick="agregarRepuesto()">+ Agregar Repuesto</button>
+
+        <div class="totals-section">
+            <p>Subtotal Servicios: <span id="lbl-sub-servicios">S/ 0.00</span></p>
+            <p>Subtotal Repuestos: <span id="lbl-sub-repuestos">S/ 0.00</span></p>
+            <p>SubTotal: <span id="lbl-subtotal">S/ 0.00</span></p>
+            <p>IGV (18%): <span id="lbl-igv">S/ 0.00</span></p>
+            <h3>TOTAL: <span id="lbl-total">S/ 0.00</span></h3>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <button type="submit" class="btn" style="padding: 15px 30px; font-size: 16px; background-color: #28a745;">Guardar y Generar Orden</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function agregarServicio() {
+        const tbody = document.getElementById('tabla-servicios');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" class="serv-desc" placeholder="Descripción"></td>
+            <td><input type="number" step="0.01" class="serv-precio" value="0.00" oninput="calcularTotales()"></td>
+            <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function agregarRepuesto() {
+        const tbody = document.getElementById('tabla-repuestos');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" class="rep-desc" placeholder="Descripción"></td>
+            <td><input type="number" step="0.01" class="rep-precio" value="0.00" oninput="calcularTotales()"></td>
+            <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function eliminarFila(btn) {
+        const tr = btn.closest('tr');
+        tr.remove();
+        calcularTotales();
+    }
+
+    function calcularTotales() {
+        let subServicios = 0;
+        document.querySelectorAll('.serv-precio').forEach(input => {
+            subServicios += parseFloat(input.value) || 0;
+        });
+
+        let subRepuestos = 0;
+        document.querySelectorAll('.rep-precio').forEach(input => {
+            subRepuestos += parseFloat(input.value) || 0;
+        });
+
+        let subtotal = subServicios + subRepuestos;
+        let igv = subtotal * 0.18;
+        let total = subtotal + igv;
+
+        document.getElementById('lbl-sub-servicios').innerText = 'S/ ' + subServicios.toFixed(2);
+        document.getElementById('lbl-sub-repuestos').innerText = 'S/ ' + subRepuestos.toFixed(2);
+        document.getElementById('lbl-subtotal').innerText = 'S/ ' + subtotal.toFixed(2);
+        document.getElementById('lbl-igv').innerText = 'S/ ' + igv.toFixed(2);
+        document.getElementById('lbl-total').innerText = 'S/ ' + total.toFixed(2);
+    }
+
+    document.getElementById('ordenForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const servicios = [];
@@ -60,3 +342,7 @@ document.getElementById('ordenForm').addEventListener('submit', async function(e
             alert('Error de conexión al generar la orden.');
         }
     });
+</script>
+
+</body>
+</html>
