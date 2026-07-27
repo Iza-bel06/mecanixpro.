@@ -405,15 +405,15 @@
             repuestos: repuestos
         };
 
-     
-    document.addEventListener('input', function(e) {
+     document.addEventListener('input', function(e) {
         if (e.target.classList.contains('serv-precio') || e.target.classList.contains('rep-precio')) {
             calcularTotales();
         }
     });
 
     calcularTotales();
-</script>
 
-</body>
-</html>
+    window.onload = function() {
+        calcularTotales();
+    };
+ 
