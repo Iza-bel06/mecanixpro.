@@ -3,7 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'tu_clave_secreta_super_segura'  # Cambiala por una clave aleatoria
+app.secret_key = 'tu_clave_secreta_super_segura'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -17,6 +17,9 @@ users_db = {
         "password": generate_password_hash("123456")
     }
 }
+
+# Base de datos simulada para guardar el historial de vehículos por placa
+vehiculos_db = {}
 
 class User(UserMixin):
     def __init__(self, id, username):
@@ -62,10 +65,26 @@ def logout():
 def index():
     return render_template('index.html')
 
+# NUEVA RUTA: Buscar si la placa ya existe en el historial
+@app.route('/buscar-vehiculo/<placa>', methods=['GET'])
+@login_required
+def buscar_vehiculo(placa):
+    placa_limpia = placa.strip().upper()
+    if placa_limpia in vehiculos_db:
+        return jsonify({"encontrado": True, "datos": vehiculos_db[placa_limpia]})
+    return jsonify({"encontrado": False})
+
 @app.route('/generar-ticket', methods=['POST'])
 @login_required
 def generar_ticket():
     data = request.get_json()
+    
+    # Guardar automáticamente los datos del vehículo y cliente asociados a la placa
+    if data and 'vehiculo' in data and 'placa' in data['vehiculo']:
+        placa = data['vehiculo']['placa'].strip().upper()
+        if placa:
+            vehiculos_db[placa] = data  # Almacena toda la orden
+
     return render_template('ticket.html', orden=data)
 
 if __name__ == '__main__':
