@@ -109,45 +109,11 @@
     <h2>🛠️ MecanixPro - Orden de Servicio</h2>
 
     <form id="ordenForm">
-        <h3>👤 Datos del Cliente</h3>
-        <div class="grid-2">
-            <div class="form-group">
-                <label for="tipo_doc">Tipo de Documento</label>
-                <select id="tipo_doc">
-                    <option value="DNI">DNI</option>
-                    <option value="RUC">RUC</option>
-                    <option value="CE">Carné de Extranjería</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="num_doc">Nro de Documento</label>
-                <input type="text" id="num_doc" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="nombre_cliente">Nombre o Razón Social</label>
-            <input type="text" id="nombre_cliente" required>
-        </div>
-        <div class="grid-2">
-            <div class="form-group">
-                <label for="telefono">Teléfono</label>
-                <input type="text" id="telefono">
-            </div>
-            <div class="form-group">
-                <label for="correo">Correo Electrónico</label>
-                <input type="email" id="correo">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="direccion">Dirección</label>
-            <input type="text" id="direccion">
-        </div>
-
         <h3>🚗 Datos del Vehículo</h3>
         <div class="grid-3">
             <div class="form-group">
-                <label for="placa">Placa</label>
-                <input type="text" id="placa" required>
+                <label for="placa">Placa (Buscar / Registrar)</label>
+                <input type="text" id="placa" placeholder="Ej. ABC-123" required onblur="buscarVehiculoPorPlaca()">
             </div>
             <div class="form-group">
                 <label for="marca">Marca</label>
@@ -181,6 +147,40 @@
                 <label for="motor">Nro de Motor</label>
                 <input type="text" id="motor">
             </div>
+        </div>
+
+        <h3>👤 Datos del Cliente</h3>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="tipo_doc">Tipo de Documento</label>
+                <select id="tipo_doc">
+                    <option value="DNI">DNI</option>
+                    <option value="RUC">RUC</option>
+                    <option value="CE">Carné de Extranjería</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="num_doc">Nro de Documento</label>
+                <input type="text" id="num_doc" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="nombre_cliente">Nombre o Razón Social</label>
+            <input type="text" id="nombre_cliente" required>
+        </div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono">
+            </div>
+            <div class="form-group">
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" id="correo">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion">
         </div>
 
         <h3>🛠️ Servicios (Mano de Obra)</h3>
@@ -236,6 +236,46 @@
 </div>
 
 <script>
+    // Función para buscar automáticamente si la placa ya existe en el historial
+    async function buscarVehiculoPorPlaca() {
+        const placaInput = document.getElementById('placa').value.trim();
+        if (!placaInput) return;
+
+        try {
+            const response = await fetch(`/buscar-vehiculo/${encodeURIComponent(placaInput)}`);
+            const resultado = await response.json();
+
+            if (resultado.encontrado) {
+                const datos = resultado.datos;
+                
+                // Autocompletar datos del cliente si existen
+                if (datos.cliente) {
+                    document.getElementById('tipo_doc').value = datos.cliente.tipo_doc || 'DNI';
+                    document.getElementById('num_doc').value = datos.cliente.num_doc || '';
+                    document.getElementById('nombre_cliente').value = datos.cliente.nombre || '';
+                    document.getElementById('telefono').value = datos.cliente.telefono || '';
+                    document.getElementById('correo').value = datos.cliente.correo || '';
+                    document.getElementById('direccion').value = datos.cliente.direccion || '';
+                }
+
+                // Autocompletar datos del vehículo si existen
+                if (datos.vehiculo) {
+                    document.getElementById('marca').value = datos.vehiculo.marca || '';
+                    document.getElementById('modelo').value = datos.vehiculo.modelo || '';
+                    document.getElementById('anio').value = datos.vehiculo.anio || '';
+                    document.getElementById('km').value = datos.vehiculo.km || '';
+                    document.getElementById('color').value = datos.vehiculo.color || '';
+                    document.getElementById('chasis').value = datos.vehiculo.chasis || '';
+                    document.getElementById('motor').value = datos.vehiculo.motor || '';
+                }
+
+                alert('¡Vehículo encontrado en el historial! Se han autocompletado los datos.');
+            }
+        } catch (error) {
+            console.error('Error al buscar la placa:', error);
+        }
+    }
+
     function agregarServicio() {
         const tbody = document.getElementById('tabla-servicios');
         const tr = document.createElement('tr');
