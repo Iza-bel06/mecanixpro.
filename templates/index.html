@@ -247,6 +247,7 @@
             if (resultado.encontrado) {
                 const datos = resultado.datos;
                 
+                // Autocompletar datos del cliente
                 if (datos.cliente) {
                     document.getElementById('tipo_doc').value = datos.cliente.tipo_doc || 'DNI';
                     document.getElementById('num_doc').value = datos.cliente.num_doc || '';
@@ -256,15 +257,15 @@
                     document.getElementById('direccion').value = datos.cliente.direccion || '';
                 }
 
-                if (datos.vehiculo) {
-                    document.getElementById('marca').value = datos.vehiculo.marca || '';
-                    document.getElementById('modelo').value = datos.vehiculo.modelo || '';
-                    document.getElementById('anio').value = datos.vehiculo.anio || '';
-                    document.getElementById('km').value = datos.vehiculo.km || '';
-                    document.getElementById('color').value = datos.vehiculo.color || '';
-                    document.getElementById('chasis').value = datos.vehiculo.chasis || '';
-                    document.getElementById('motor').value = datos.vehiculo.motor || '';
-                }
+                // Autocompletar datos del vehículo
+                const vehiculo = datos.vehiculo || datos;
+                document.getElementById('marca').value = vehiculo.marca || '';
+                document.getElementById('modelo').value = vehiculo.modelo || '';
+                document.getElementById('anio').value = vehiculo.anio || '';
+                document.getElementById('km').value = vehiculo.km || '';
+                document.getElementById('color').value = vehiculo.color || '';
+                document.getElementById('chasis').value = vehiculo.chasis || '';
+                document.getElementById('motor').value = vehiculo.motor || '';
             }
         } catch (error) {
             console.error('Error al buscar la placa:', error);
