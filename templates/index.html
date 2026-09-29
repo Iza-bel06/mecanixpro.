@@ -106,7 +106,7 @@
 </div>
 
 <div class="container">
-    <h2>🛠 MecanixPro - Orden de Servicio</h2>
+    <h2>🛠️️ MecanixPro - Orden de Servicio</h2>
 
     <form id="ordenForm">
         <h3>🚗 Datos del Vehículo</h3>
@@ -183,7 +183,7 @@
             <input type="text" id="direccion">
         </div>
 
-        <h3>🛠 Servicios (Mano de Obra)</h3>
+        <h3>🛠️️ Servicios (Mano de Obra)</h3>
         <table>
             <thead>
                 <tr>
@@ -195,16 +195,7 @@
             <tbody id="tabla-servicios">
                 <tr>
                     <td>
-                        <select class="serv-desc">
-                            <option value="">-- Seleccione un servicio frecuente --</option>
-                            <option value="Afinamiento electrónico">Afinamiento electrónico</option>
-                            <option value="Mantenimiento preventivo 5,000 km">Mantenimiento preventivo 5,000 km</option>
-                            <option value="Mantenimiento preventivo 10,000 km">Mantenimiento preventivo 10,000 km</option>
-                            <option value="Cambio de pastillas de freno">Cambio de pastillas de freno</option>
-                            <option value="Diagnóstico con escáner automotriz">Diagnóstico con escáner automotriz</option>
-                            <option value="Limpieza de inyectores">Limpieza de inyectores</option>
-                            <option value="Cambio de líquido de frenos">Cambio de líquido de frenos</option>
-                        </select>
+                        <input type="text" class="serv-desc" placeholder="Ej. Afinamiento" list="lista-servicios">
                     </td>
                     <td><input type="number" step="0.01" class="serv-precio" value="0.00" oninput="calcularTotales()"></td>
                     <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
@@ -225,17 +216,7 @@
             <tbody id="tabla-repuestos">
                 <tr>
                     <td>
-                        <select class="rep-desc">
-                            <option value="">-- Seleccione un repuesto frecuente --</option>
-                            <option value="Aceite sintético 5W-30 (Litro)">Aceite sintético 5W-30 (Litro)</option>
-                            <option value="Aceite semisintético 10W-40 (Litro)">Aceite semisintético 10W-40 (Litro)</option>
-                            <option value="Filtro de aceite estándar">Filtro de aceite estándar</option>
-                            <option value="Filtro de aire de motor">Filtro de aire de motor</option>
-                            <option value="Filtro de cabina / aire acondicionado">Filtro de cabina / aire acondicionado</option>
-                            <option value="Juego de pastillas de freno delanteras">Juego de pastillas de freno delanteras</option>
-                            <option value="Bujía de encendido convencional">Bujía de encendido convencional</option>
-                            <option value="Limpiador de frenos (Spray)">Limpiador de frenos (Spray)</option>
-                        </select>
+                        <input type="text" class="rep-desc" placeholder="Ej. Filtro de aceite" list="lista-repuestos">
                     </td>
                     <td><input type="number" step="0.01" class="rep-precio" value="0.00" oninput="calcularTotales()"></td>
                     <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
@@ -243,6 +224,28 @@
             </tbody>
         </table>
         <button type="button" class="btn" onclick="agregarRepuesto()">+ Agregar Repuesto</button>
+
+        <!-- Listas inteligentes autoincrementables -->
+        <datalist id="lista-servicios">
+            <option value="Afinamiento electrónico">
+            <option value="Mantenimiento preventivo 5,000 km">
+            <option value="Mantenimiento preventivo 10,000 km">
+            <option value="Cambio de pastillas de freno">
+            <option value="Diagnóstico con escáner automotriz">
+            <option value="Limpieza de inyectores">
+            <option value="Cambio de líquido de frenos">
+        </datalist>
+
+        <datalist id="lista-repuestos">
+            <option value="Aceite sintético 5W-30 (Litro)">
+            <option value="Aceite semisintético 10W-40 (Litro)">
+            <option value="Filtro de aceite estándar">
+            <option value="Filtro de aire de motor">
+            <option value="Filtro de cabina / aire acondicionado">
+            <option value="Juego de pastillas de freno delanteras">
+            <option value="Bujía de encendido convencional">
+            <option value="Limpiador de frenos (Spray)">
+        </datalist>
 
         <div class="totals-section">
             <p>Subtotal Servicios: <span id="lbl-sub-servicios">S/ 0.00</span></p>
@@ -270,7 +273,6 @@
             if (resultado.encontrado) {
                 const datos = resultado.datos;
                 
-                // Autocompletar datos del cliente
                 if (datos.cliente) {
                     document.getElementById('tipo_doc').value = datos.cliente.tipo_doc || 'DNI';
                     document.getElementById('num_doc').value = datos.cliente.num_doc || '';
@@ -280,7 +282,6 @@
                     document.getElementById('direccion').value = datos.cliente.direccion || '';
                 }
 
-                // Autocompletar datos del vehículo
                 const vehiculo = datos.vehiculo || datos;
                 document.getElementById('marca').value = vehiculo.marca || '';
                 document.getElementById('modelo').value = vehiculo.modelo || '';
@@ -299,18 +300,7 @@
         const tbody = document.getElementById('tabla-servicios');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>
-                <select class="serv-desc">
-                    <option value="">-- Seleccione un servicio frecuente --</option>
-                    <option value="Afinamiento electrónico">Afinamiento electrónico</option>
-                    <option value="Mantenimiento preventivo 5,000 km">Mantenimiento preventivo 5,000 km</option>
-                    <option value="Mantenimiento preventivo 10,000 km">Mantenimiento preventivo 10,000 km</option>
-                    <option value="Cambio de pastillas de freno">Cambio de pastillas de freno</option>
-                    <option value="Diagnóstico con escáner automotriz">Diagnóstico con escáner automotriz</option>
-                    <option value="Limpieza de inyectores">Limpieza de inyectores</option>
-                    <option value="Cambio de líquido de frenos">Cambio de líquido de frenos</option>
-                </select>
-            </td>
+            <td><input type="text" class="serv-desc" placeholder="Descripción" list="lista-servicios"></td>
             <td><input type="number" step="0.01" class="serv-precio" value="0.00" oninput="calcularTotales()"></td>
             <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
         `;
@@ -321,19 +311,7 @@
         const tbody = document.getElementById('tabla-repuestos');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>
-                <select class="rep-desc">
-                    <option value="">-- Seleccione un repuesto frecuente --</option>
-                    <option value="Aceite sintético 5W-30 (Litro)">Aceite sintético 5W-30 (Litro)</option>
-                    <option value="Aceite semisintético 10W-40 (Litro)">Aceite semisintético 10W-40 (Litro)</option>
-                    <option value="Filtro de aceite estándar">Filtro de aceite estándar</option>
-                    <option value="Filtro de aire de motor">Filtro de aire de motor</option>
-                    <option value="Filtro de cabina / aire acondicionado">Filtro de cabina / aire acondicionado</option>
-                    <option value="Juego de pastillas de freno delanteras">Juego de pastillas de freno delanteras</option>
-                    <option value="Bujía de encendido convencional">Bujía de encendido convencional</option>
-                    <option value="Limpiador de frenos (Spray)">Limpiador de frenos (Spray)</option>
-                </select>
-            </td>
+            <td><input type="text" class="rep-desc" placeholder="Descripción" list="lista-repuestos"></td>
             <td><input type="number" step="0.01" class="rep-precio" value="0.00" oninput="calcularTotales()"></td>
             <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
         `;
