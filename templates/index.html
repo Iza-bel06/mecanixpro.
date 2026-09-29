@@ -106,7 +106,7 @@
 </div>
 
 <div class="container">
-    <h2>🛠️️ MecanixPro - Orden de Servicio</h2>
+    <h2>🛠 MecanixPro - Orden de Servicio</h2>
 
     <form id="ordenForm">
         <h3>🚗 Datos del Vehículo</h3>
@@ -183,7 +183,7 @@
             <input type="text" id="direccion">
         </div>
 
-        <h3>🛠️️ Servicios (Mano de Obra)</h3>
+        <h3>🛠 Servicios (Mano de Obra)</h3>
         <table>
             <thead>
                 <tr>
@@ -195,7 +195,7 @@
             <tbody id="tabla-servicios">
                 <tr>
                     <td>
-                        <input type="text" class="serv-desc" placeholder="Ej. Afinamiento" list="lista-servicios">
+                        <input type="text" class="serv-desc" placeholder="Seleccione o escriba un servicio..." list="lista-servicios" onclick="this.select()">
                     </td>
                     <td><input type="number" step="0.01" class="serv-precio" value="0.00" oninput="calcularTotales()"></td>
                     <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
@@ -216,7 +216,7 @@
             <tbody id="tabla-repuestos">
                 <tr>
                     <td>
-                        <input type="text" class="rep-desc" placeholder="Ej. Filtro de aceite" list="lista-repuestos">
+                        <input type="text" class="rep-desc" placeholder="Seleccione o escriba un repuesto..." list="lista-repuestos" onclick="this.select()">
                     </td>
                     <td><input type="number" step="0.01" class="rep-precio" value="0.00" oninput="calcularTotales()"></td>
                     <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
@@ -225,7 +225,7 @@
         </table>
         <button type="button" class="btn" onclick="agregarRepuesto()">+ Agregar Repuesto</button>
 
-        <!-- Listas inteligentes autoincrementables -->
+        <!-- Listas de sugerencias inteligentes -->
         <datalist id="lista-servicios">
             <option value="Afinamiento electrónico">
             <option value="Mantenimiento preventivo 5,000 km">
@@ -300,7 +300,9 @@
         const tbody = document.getElementById('tabla-servicios');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="text" class="serv-desc" placeholder="Descripción" list="lista-servicios"></td>
+            <td>
+                <input type="text" class="serv-desc" placeholder="Seleccione o escriba un servicio..." list="lista-servicios" onclick="this.select()">
+            </td>
             <td><input type="number" step="0.01" class="serv-precio" value="0.00" oninput="calcularTotales()"></td>
             <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
         `;
@@ -311,7 +313,9 @@
         const tbody = document.getElementById('tabla-repuestos');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="text" class="rep-desc" placeholder="Descripción" list="lista-repuestos"></td>
+            <td>
+                <input type="text" class="rep-desc" placeholder="Seleccione o escriba un repuesto..." list="lista-repuestos" onclick="this.select()">
+            </td>
             <td><input type="number" step="0.01" class="rep-precio" value="0.00" oninput="calcularTotales()"></td>
             <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
         `;
