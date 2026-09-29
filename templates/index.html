@@ -194,7 +194,7 @@
             <tbody id="tabla-servicios">
                 <tr>
                     <td>
-                        <input type="text" class="serv-desc" placeholder="Escriba la descripción del servicio...">
+                        <input type="text" class="serv-desc" placeholder="Escriba el servicio...">
                     </td>
                     <td><input type="number" step="0.01" class="serv-precio" value="0.00" oninput="calcularTotales()"></td>
                     <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
@@ -215,7 +215,7 @@
             <tbody id="tabla-repuestos">
                 <tr>
                     <td>
-                        <input type="text" class="rep-desc" placeholder="Escriba la descripción del repuesto...">
+                        <input type="text" class="rep-desc" placeholder="Escriba el repuesto...">
                     </td>
                     <td><input type="number" step="0.01" class="rep-precio" value="0.00" oninput="calcularTotales()"></td>
                     <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
@@ -267,6 +267,19 @@
                 document.getElementById('color').value = vehiculo.color || '';
                 document.getElementById('chasis').value = vehiculo.chasis || '';
                 document.getElementById('motor').value = vehiculo.motor || '';
+            } else {
+                document.getElementById('marca').value = '';
+                document.getElementById('modelo').value = '';
+                document.getElementById('anio').value = '';
+                document.getElementById('km').value = '';
+                document.getElementById('color').value = '';
+                document.getElementById('chasis').value = '';
+                document.getElementById('motor').value = '';
+                document.getElementById('num_doc').value = '';
+                document.getElementById('nombre_cliente').value = '';
+                document.getElementById('telefono').value = '';
+                document.getElementById('correo').value = '';
+                document.getElementById('direccion').value = '';
             }
         } catch (error) {
             console.error('Error al buscar la placa:', error);
@@ -277,7 +290,7 @@
         const tbody = document.getElementById('tabla-servicios');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="text" class="serv-desc" placeholder="Escriba la descripción del servicio..."></td>
+            <td><input type="text" class="serv-desc" placeholder="Escriba el servicio..."></td>
             <td><input type="number" step="0.01" class="serv-precio" value="0.00" oninput="calcularTotales()"></td>
             <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
         `;
@@ -288,7 +301,7 @@
         const tbody = document.getElementById('tabla-repuestos');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="text" class="rep-desc" placeholder="Escriba la descripción del repuesto..."></td>
+            <td><input type="text" class="rep-desc" placeholder="Escriba el repuesto..."></td>
             <td><input type="number" step="0.01" class="rep-precio" value="0.00" oninput="calcularTotales()"></td>
             <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">X</button></td>
         `;
